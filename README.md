@@ -34,7 +34,19 @@ The solution employs a two-stage prediction approach:
 
 ## Model Training Pipeline 🔄
 
-Model weights can be downloaded from [here](https://www.kaggle.com/datasets/makstabu/tabu-self-driving-car-files/data).
+Requirements:
+- python >=3.10
+- pdm >= 2.9.2
+
+Change ROOT_DATA_DIR to your path in constants.py.
+
+Model weights can be downloaded from [here](https://www.kaggle.com/datasets/makstabu/tabu-self-driving-car-files/data). Put weights in *ROOT_DATA_DIR*
+
+Do  
+```bash
+pdm sync
+```
+before running pipeline
 
 ### 1. TSMixer Data Preparation
 ```bash

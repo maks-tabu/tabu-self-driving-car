@@ -1,4 +1,4 @@
-# 6th Place Solution - Yandex Cup 2024 ML: Self-Driving Cars 🚗
+# [6th Place Solution - Yandex Cup 2024 ML: Self-Driving Cars 🚗](https://contest.yandex.ru/contest/69013/standings/)
 
 ## Problem Overview 🎯
 
@@ -24,15 +24,17 @@ The challenge focuses on predicting self-driving vehicle trajectories using vari
 ## Solution Architecture 🏗️
 
 The solution employs a two-stage prediction approach:
-1. **TSMixer** (Time Series Model)
+1. **[TSMixer](https://arxiv.org/abs/2303.06053)** (Time Series Model) (val 1.65 / test public 1.54)
    - Primary prediction of core vehicle parameters
    - Focus on total velocity and yaw rate estimation
 
 2. **CatBoost**
-   - Refinement of initial predictions
+   - Refinement of initial predictions (val 1.32 / test public 1.17)
    - Enhanced accuracy through gradient boosting
 
 ## Model Training Pipeline 🔄
+
+Model weights can be downloaded from [here](https://www.kaggle.com/datasets/makstabu/tabu-self-driving-car-files/data).
 
 ### 1. TSMixer Data Preparation
 ```bash

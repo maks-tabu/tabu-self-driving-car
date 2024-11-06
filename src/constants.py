@@ -1,0 +1,202 @@
+import numpy as np
+import random
+import torch
+import os
+from pathlib import Path
+
+ROOT_DATA_DIR = Path("INSERT YOUR PATH")
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+RANDOM_STATE = 42
+N_SPLITS = 6
+
+
+def seed_everything(seed: int = 42, deterministic: bool = True):
+    random.seed(seed)  # Python random
+    np.random.seed(seed)  # Numpy
+    torch.manual_seed(seed)  # PyTorch CPU
+    torch.cuda.manual_seed_all(seed)  # PyTorch GPU
+    os.environ["PYTHONHASHSEED"] = str(seed)  # Python hash seed
+
+    if deterministic:
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+
+
+seed_everything(RANDOM_STATE)
+
+
+TSMIXER_PARS = {
+    "batch_size": 32,
+    "total_length": 500,
+    "prediction_length": 375,
+    "sequence_length": 75,
+    "num_epochs": 100,
+    "hidden_channels": 256,
+    "n_splits": 6,
+}
+
+CATBOOST_PARS = {
+    "eval_metric": "RMSE",
+    "random_seed": 42,
+    "verbose": 10,
+    "task_type": "GPU",
+    "devices": "0:1",
+    "gpu_ram_part": 0.95,
+    "iterations": 5000,
+    "learning_rate": 0.051253518730487405,
+    "depth": 11,
+    "l2_leaf_reg": 3.3196606857490267e-08,
+    "bootstrap_type": "Bernoulli",
+    "grow_policy": "Depthwise",
+    "min_data_in_leaf": 71,
+    "subsample": 0.5148450628088082,
+}
+
+FEATURES_V_TOTAL = [
+    "index",
+    "weights_acceleration_diff",
+    "acceleration_level",
+    "acceleration_step",
+    "braking_step",
+    "steering",
+    "vehicle_id",
+    "vehicle_model",
+    "vehicle_model_modification",
+    "x_known_values_mean",
+    "y_known_values_mean",
+    "z_known_values_mean",
+    "yaw_known_values_mean",
+    "roll_known_values_mean",
+    "pitch_known_values_mean",
+    "x_known_values_std",
+    "y_known_values_std",
+    "z_known_values_std",
+    "yaw_known_values_std",
+    "roll_known_values_std",
+    "pitch_known_values_std",
+    "v_total_mean",
+    "v_total_std",
+    "a_total_mean",
+    "a_total_std",
+    "v_total_last_known_value",
+    "a_total_last_known_value",
+    "x_last_known_value",
+    "y_last_known_value",
+    "z_last_known_value",
+    "yaw_last_known_value",
+    "roll_last_known_value",
+    "pitch_last_known_value",
+    "ride_date_count",
+    "acceleration_level_vehicle_model_modification",
+    "x_pred",
+    "y_pred",
+    "yaw_pred",
+    "w_yaw_pred",
+    "v_total_pred",
+    "a_total_pred",
+    "v_total_pred_lag_1",
+    "v_total_pred_lag_2",
+    "v_total_pred_lag_3",
+    "v_total_pred_lag_4",
+    "v_total_pred_lag_5",
+    "v_total_pred_rolling_mean_3",
+    "v_total_pred_rolling_mean_5",
+    "v_total_pred_rolling_mean_7",
+    "v_total_pred_mean",
+    "v_total_pred_std",
+    "v_total_pred_min",
+    "v_total_pred_max",
+    "v_total_pred_log",
+    "v_total_pred_kv",
+    "v_total_pred_vehicle_id_mean",
+    "v_total_pred_vehicle_id_std",
+    "v_total_pred_vehicle_id",
+    "v_total_pred_vehicle_model_mean",
+    "v_total_pred_vehicle_model_std",
+    "v_total_pred_vehicle_model",
+    "v_total_pred_vehicle_model_modification_mean",
+    "v_total_pred_vehicle_model_modification_std",
+    "v_total_pred_vehicle_model_modification",
+    "v_total_pred_tires_mean",
+    "v_total_pred_tires_std",
+    "v_total_pred_tires",
+    "v_total_pred_ride_date_mean",
+    "v_total_pred_ride_date_std",
+    "v_total_pred_ride_date",
+    "v_total_pred_inv",
+    "v_total_pred_log_inv",
+    "v_total_pred_y_known_values_std",
+    "v_total_pred_y_known_values_mean",
+    "v_total_pred_x_known_values_std",
+    "v_total_pred_x_known_values_mean",
+    "v_total_pred_v_total_mean",
+    "v_total_pred_v_total_std",
+]
+
+
+FEATURES_W_YAW = [
+    "index",
+    "weights_acceleration_diff",
+    "acceleration_level",
+    "acceleration_step",
+    "braking_step",
+    "steering",
+    "vehicle_id",
+    "x_known_values_mean",
+    "y_known_values_mean",
+    "z_known_values_mean",
+    "yaw_known_values_mean",
+    "roll_known_values_mean",
+    "pitch_known_values_mean",
+    "x_known_values_std",
+    "y_known_values_std",
+    "z_known_values_std",
+    "yaw_known_values_std",
+    "roll_known_values_std",
+    "pitch_known_values_std",
+    "v_total_mean",
+    "v_total_std",
+    "a_total_mean",
+    "a_total_std",
+    "v_total_last_known_value",
+    "a_total_last_known_value",
+    "x_last_known_value",
+    "y_last_known_value",
+    "z_last_known_value",
+    "yaw_last_known_value",
+    "roll_last_known_value",
+    "pitch_last_known_value",
+    "ride_date_count",
+    "acceleration_level_vehicle_model_modification",
+    "x_pred",
+    "y_pred",
+    "yaw_pred",
+    "w_yaw_pred",
+    "v_total_pred",
+    "a_total_pred",
+    "w_yaw_pred_log",
+    "w_yaw_pred_kv",
+    "w_yaw_pred_vehicle_id_mean",
+    "w_yaw_pred_vehicle_id_std",
+    "w_yaw_pred_vehicle_id",
+    "w_yaw_pred_vehicle_model_mean",
+    "w_yaw_pred_vehicle_model_std",
+    "w_yaw_pred_vehicle_model",
+    "w_yaw_pred_vehicle_model_modification_mean",
+    "w_yaw_pred_vehicle_model_modification_std",
+    "w_yaw_pred_vehicle_model_modification",
+    "w_yaw_pred_tires_mean",
+    "w_yaw_pred_tires_std",
+    "w_yaw_pred_tires",
+    "w_yaw_pred_ride_date_mean",
+    "w_yaw_pred_ride_date_std",
+    "w_yaw_pred_ride_date",
+    "w_yaw_pred_inv",
+    "w_yaw_pred_log_inv",
+    "w_yaw_pred_y_known_values_std",
+    "w_yaw_pred_y_known_values_mean",
+    "w_yaw_pred_x_known_values_std",
+    "w_yaw_pred_x_known_values_mean",
+    "w_yaw_pred_v_total_mean",
+    "w_yaw_pred_v_total_std",
+]

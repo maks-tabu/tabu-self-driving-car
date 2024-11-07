@@ -68,7 +68,11 @@ def main(
             else:
                 features_columns = FEATURES_V_TOTAL
             pred_col_name = f"{target}_pred"
-            model = CatBoostRegressor(task_type="GPU")
+            if DEVICE == "cuda":
+                task_type = "GPU"
+            else:
+                task_type = "CPU"
+            model = CatBoostRegressor(task_type=task_type)
             model.load_model(ROOT_DATA_DIR / f"catboost_{target}_{n_fold}.pt")
             catboost_data = pl.read_parquet(
                 ROOT_DATA_DIR / f"data_{pred_col_name}_{data_type}.pa"
